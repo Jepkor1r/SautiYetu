@@ -1,19 +1,13 @@
 const MATCH_ID = "sauti-derby-001";
+const mockData = require("./mockData");
 
-const players = [
-  { id: "1", name: "Amani Otieno", team: "Nairobi Rhythms", role: "Forward" },
-  { id: "2", name: "Musa Barasa", team: "Nairobi Rhythms", role: "Midfielder" },
-  { id: "3", name: "Kevin Njoroge", team: "Nairobi Rhythms", role: "Winger" },
-  { id: "4", name: "Talia Wambui", team: "Mombasa Waves", role: "Forward" },
-  { id: "5", name: "Rashid Omondi", team: "Mombasa Waves", role: "Midfielder" },
-  { id: "6", name: "Zuri Achieng", team: "Mombasa Waves", role: "Winger" }
-];
+const players = mockData.players;
 
 const matchState = {
   id: MATCH_ID,
   title: "Sauti Derby Live",
-  homeTeam: "Nairobi Rhythms",
-  awayTeam: "Mombasa Waves",
+  homeTeam: mockData.teams.home,
+  awayTeam: mockData.teams.away,
   venue: "Nyayo National Stadium",
   halftimeAct: "Sol Generation Soundsystem",
   minute: 21,
@@ -208,6 +202,8 @@ function resetDemo() {
   currentTrivia = null;
   matchState.minute = 21;
   matchState.status = "LIVE";
+  matchState.homeTeam = mockData.teams.home;
+  matchState.awayTeam = mockData.teams.away;
   matchState.score.home = 1;
   matchState.score.away = 1;
   matchState.lastUpdatedAt = new Date().toISOString();
@@ -216,7 +212,7 @@ function resetDemo() {
     type: "kickoff",
     minute: 1,
     title: "Kickoff",
-    message: "Sauti Derby is live from Nyayo National Stadium."
+    message: `${mockData.teams.home} vs ${mockData.teams.away} is live from Nyayo National Stadium.`
   });
 }
 

@@ -1,12 +1,45 @@
 const EventEmitter = require("events");
 const store = require("./store");
+const mockData = require("./mockData");
 
 function sample(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+function chooseWeightedEventType(templates) {
+  const pool = templates.filter((item) => item.weight > 0);
+  const totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
+  let rand = Math.random() * totalWeight;
+
+  for (const item of pool) {
+    rand -= item.weight;
+
+    if (rand <= 0) {
+      return item.type;
+    }
+  }
+
+  return pool.length ? pool[pool.length - 1].type : "goal";
+}
+
+function selectEventType(nextMinute, forcedType, halftimeEmitted) {
+  if (forcedType) {
+    return forcedType;
+  }
+
+  if (nextMinute >= 90) {
+    return "fulltime";
+  }
+
+  if (nextMinute >= 45 && !halftimeEmitted) {
+    return "halftime";
+  }
+
+  return chooseWeightedEventType(mockData.eventTemplates.filter((item) => !item.fixed));
+}
+
 function buildEvent(type, minute) {
-  const player = sample(store.players);
+  const player = sample(mockData.players);
   const base = {
     id: `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     type,
@@ -14,6 +47,20 @@ function buildEvent(type, minute) {
     player,
     createdAt: new Date().toISOString()
   };
+
+  if (type === "card" || type === "yellow_card" || type === "red_card") {
+    const cardType = type === "card" ? (Math.random() > 0.5 ? "yellow_card" : "red_card") : type;
+    const cardColor = cardType === "yellow_card" ? "yellow" : "red";
+
+    return {
+      ...base,
+      title: `${cardColor.charAt(0).toUpperCase()}${cardColor.slice(1)} card`,
+      type: cardType,
+      team: player.team,
+      player: player.name,
+      message: `${player.name} receives a ${cardColor} card for a rash challenge.`
+    };
+  }
 
   if (type === "goal") {
     return {
@@ -25,12 +72,18 @@ function buildEvent(type, minute) {
     };
   }
 
-  if (type === "card") {
+  if (type === "substitution") {
+    const playerOut = sample(mockData.players);
+    const teamPlayers = mockData.players.filter((p) => p.team === playerOut.team && p.name !== playerOut.name);
+    const playerIn = teamPlayers.length ? sample(teamPlayers) : sample(mockData.players.filter((p) => p.name !== playerOut.name));
+
     return {
       ...base,
-      title: "Card",
-      team: player.team,
-      message: `${player.name} is booked after a late challenge.`
+      title: "Substitution",
+      team: playerOut.team,
+      playerOut: playerOut.name,
+      playerIn: playerIn.name,
+      message: `${playerIn.name} replaces ${playerOut.name} for ${playerOut.team}.`
     };
   }
 
@@ -88,13 +141,9 @@ class MatchEventFeed extends EventEmitter {
     let type = forcedType;
 
     if (!type) {
-      if (nextMinute >= 90) {
-        type = "fulltime";
-      } else if (nextMinute >= 45 && !this.halftimeEmitted) {
-        type = "halftime";
+      type = selectEventType(nextMinute, type, this.halftimeEmitted);
+      if (type === "halftime") {
         this.halftimeEmitted = true;
-      } else {
-        type = Math.random() > 0.42 ? "goal" : "card";
       }
     }
 

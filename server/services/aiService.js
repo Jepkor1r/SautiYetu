@@ -1,7 +1,12 @@
 const { getClaudeClient, getClaudeModel, STRICT_JSON_SYSTEM_PROMPT } = require("../config/claude");
 const store = require("./store");
+const mockData = require("./mockData");
 
 const OPTION_KEYS = ["A", "B", "C", "D"];
+
+function sample(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
 const DJ_AFRO_DIRECTION = [
   "Use DJ Afro narration style: dramatic, exaggerated, larger-than-life, and full of playful hyperbole.",
   "Use dramatic pauses written as '...'.",
@@ -168,15 +173,21 @@ function normalizeScript(payload, fallback) {
 
 async function generateTriviaQuestion(context = store.getMatchState()) {
   const match = resolveMatch(context);
-  const fallback = () => ({
-    id: `trivia-${Date.now()}`,
-    question: `Tonight at Nyayo... which team is hosting this Sauti Derby spectacle?`,
-    choices: [match.homeTeam, match.awayTeam, "Kisumu Crescendos", "Eldoret Echoes"],
-    correctAnswer: match.homeTeam,
-    options: choicesToOptions([match.homeTeam, match.awayTeam, "Kisumu Crescendos", "Eldoret Echoes"]),
-    answer: "A",
-    explanation: `${match.homeTeam} are listed as the home side tonight.`
-  });
+  const fallbackQuestion = sample(mockData.triviaFallback);
+  const fallback = () => {
+    const choices = [...fallbackQuestion.choices];
+    const answer = correctAnswerToLetter(fallbackQuestion.correctAnswer, choices, "A");
+
+    return {
+      id: `trivia-${Date.now()}`,
+      question: fallbackQuestion.question,
+      choices,
+      correctAnswer: fallbackQuestion.correctAnswer,
+      options: choicesToOptions(choices),
+      answer,
+      explanation: `Fallback trivia: ${fallbackQuestion.correctAnswer} is correct.`
+    };
+  };
 
   const prompt = [
     "Create one live sports-and-music trivia question for this match.",

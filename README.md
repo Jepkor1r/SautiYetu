@@ -87,6 +87,8 @@ DEMO_SKIP_EXTERNAL_APIS=false
 
 Set `DEMO_SKIP_EXTERNAL_APIS=true` to run fully locally. The app will log mock SMS and airtime sends while keeping the flow working.
 
+> Use `AT_SMS_FROM` for the Africa's Talking sender ID when available. In sandbox mode, you can leave it blank or set a simulated from value.
+
 ## Africa's Talking Sandbox
 
 1. Start the backend on port `4000`.

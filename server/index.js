@@ -11,6 +11,7 @@ const gameEngine = require("./services/gameEngine");
 const leaderboard = require("./services/leaderboard");
 const rewardService = require("./services/rewardService");
 const store = require("./services/store");
+const mockData = require("./services/mockData");
 const smsRouter = require("./routes/sms");
 const ussdRouter = require("./routes/ussd");
 const voiceRouter = require("./routes/voice");
@@ -104,6 +105,10 @@ app.post("/api/demo/reset", (req, res) => {
     ok: true,
     match: store.getMatchState()
   });
+});
+
+app.get("/api/demo/mock-events", (req, res) => {
+  res.json(mockData.mockEventLog);
 });
 
 app.use("/ussd", ussdRouter);
