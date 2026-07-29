@@ -106,7 +106,7 @@ async function handleSmsCommand({ phoneNumber, text, io }) {
   if (keyword === "BOARD" || keyword === "LEADERBOARD") {
     return {
       action: "leaderboard",
-      message: leaderboard.formatLeaderboardText(),
+      message: `Leaderboard\n${leaderboard.formatLeaderboardText()}`,
       sendAiConfirmation: false
     };
   }

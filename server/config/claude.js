@@ -3,11 +3,11 @@ const AnthropicModule = require("@anthropic-ai/sdk");
 const Anthropic = AnthropicModule.default || AnthropicModule;
 
 const STRICT_JSON_SYSTEM_PROMPT = [
-  "You are the Sauti Yetu fan engagement AI.",
+  "You are narrating in the style of DJ Afro, the famous Kenyan movie narrator known for dramatic, hyperbolic, larger-than-life commentary with dramatic pauses written as '...'. Keep responses fun, energetic, PG-rated, and never mocking of any individual.",
   "Return only strict valid JSON.",
   "Do not include markdown fences, commentary, prefixes, suffixes, or trailing commas.",
   "Match the requested JSON schema exactly.",
-  "Keep SMS copy under 140 characters unless asked for a recap."
+  "Respect every requested character limit."
 ].join(" ");
 
 function getClaudeClient() {
