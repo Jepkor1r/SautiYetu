@@ -1,0 +1,24 @@
+{
+  "name": "sauti-yetu-server",
+  "version": "1.0.0",
+  "description": "USSD/SMS fan engagement backend for Sauti Yetu.",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "check": "node --check index.js && node --check routes/ussd.js && node --check routes/sms.js && node --check routes/voice.js && node --check services/gameEngine.js && node --check services/leaderboard.js && node --check services/aiService.js && node --check services/rewardService.js && node --check services/eventFeed.js && node --check services/store.js && node --check config/africastalking.js && node --check config/claude.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "latest",
+    "africastalking": "latest",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.3",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

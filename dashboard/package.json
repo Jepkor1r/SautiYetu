@@ -1,0 +1,20 @@
+{
+  "name": "sauti-yetu-dashboard",
+  "version": "1.0.0",
+  "description": "Live Sauti Yetu fan engagement dashboard.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "lucide-react": "^0.468.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "socket.io-client": "^4.7.5",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
